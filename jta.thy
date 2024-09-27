@@ -101,4 +101,45 @@ fun op :: "'a list \<Rightarrow> ('a list \<times> 'a list) \<Rightarrow> ('a li
     else (mix xs ys sy, mix (rev xs) ys sy))"
 
 
+lemma bumpDn_length:
+  shows "length (bumpDn k n) = n"
+  sorry
+
+lemma code_equivalence:
+  shows "code k n = bumpDn k n \<box> bumpDn (k + 1) n"
+  sorry
+
+lemma boxall_associativity:
+  shows "boxall (xs @ ys) = boxall xs @ boxall ys"
+  sorry
+
+lemma pairs_equiv_addpair:
+  shows "pairs k n = addpair k n []"
+  sorry
+
+lemma jcode1_equiv:
+  shows "jcode1 n = boxall (map (\<lambda>(k, m). bumpDn k m) (pairs 0 n))"
+  sorry
+
+lemma bumpDn1_pom_induction:
+  shows "bumpDn1_pom k n parity = bumpDn k n"
+  sorry
+
+
+lemma insert_equivalence:
+  shows "insert x (insert y q) = insert y (insert x q)"
+  sorry
+
+lemma remove_some_equivalence:
+  shows "remove (insert x q) = Some  q"
+  sorry
+
+lemma mix_commutativity:
+  shows "mix xs ys sy = mix ys xs sy"
+  sorry
+
+lemma op_preserves_length:
+  shows "length (fst (op xs (ys, sy))) + length (snd (op xs (ys, sy))) = length xs + length ys"
+  sorry
+
 end
