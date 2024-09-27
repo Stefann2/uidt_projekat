@@ -13,14 +13,6 @@ fun bumpBy :: "nat \<Rightarrow> nat list \<Rightarrow> nat list" where
   "bumpBy k [a] = [a + k]" |
   "bumpBy k (a # b # as) = (a + k) # b # bumpBy k as" 
 
-(* bumpBy 3 [1,2,3,4,5] = [4,2,6,4,8]
-  bumpBy 3 [1,2,3,4] = [4,2,6,4]
-  bumpBy 3 [1,2] @ [3,4] = [4, 2] @ [6, 4]
-  bumpBy 3 1 # [2] @ 3 # [4] = [4, 2] @ [6, 4]
-  bumpBy 3 [1,2,3] @ [4] = [4,2,6] @ [7] x x x x
-  bumpBy 3 [1] @ 3 # [4] = [4, 2] @ [6, 4]
-*)
-
     
 primrec jcode :: "nat \<Rightarrow> nat list" where
   "jcode 0 = []" |
@@ -81,14 +73,14 @@ fun prologUp :: "nat \<times> nat \<Rightarrow> (nat \<times> nat \<times> nat \
 fun stepUp :: "(nat \<times> nat \<times> nat \<times> nat) \<Rightarrow> (nat \<times> (nat \<times> nat \<times> nat \<times> nat)) option" where
   "stepUp (j, k, m, n) = (if m > n then None else Some (m + j, (k - j, k, m + 1, n)))"
 
-type_synonym 'a queue = "'a list" (* Queue as a list for simplicity *)
+type_synonym 'a queue = "'a list" (* red kao lista zbog jednostavnosti  *)
 
-fun insert :: "'a list \<Rightarrow> 'a queue \<Rightarrow> 'a queue" where
-  "insert xs q = xs @ q"
+fun insert :: "'a \<Rightarrow> 'a queue \<Rightarrow> 'a queue" where
+  "insert x q = x # q"
 
-fun remove :: "'a queue \<Rightarrow> ('a \<times> 'a queue)" where
-  "remove [] = (undefined, [])" (* Handle empty case separately *)
-  | "remove (x # xs) = (x, xs)"
+fun remove :: "'a queue \<Rightarrow> 'a queue option" where
+  "remove [] = None" 
+  | "remove (x # xs) = Some xs"
 
 fun isempty :: "'a queue \<Rightarrow> bool" where
   "isempty q = (q = [])"
@@ -99,14 +91,14 @@ fun consQueue :: "'a queue \<Rightarrow> 'a queue list \<Rightarrow> 'a queue li
 fun wrapQueue :: "'a queue \<Rightarrow> 'a queue list" where
   "wrapQueue xs = consQueue xs []"
 
-primrec mix :: "'a list \<Rightarrow> 'a list \<Rightarrow> 'a list \<Rightarrow> 'a list" where
+fun mix :: "'a list \<Rightarrow> 'a list \<Rightarrow> 'a list \<Rightarrow> 'a list" where
   "mix [] ys sy = ys"
-  | "mix (x # xs) ys sy = insert ys (Node x (mix xs (sy, ys)))"
+  | "mix (x # xs) ys sy = insert  x (mix xs sy ys)"
 
 fun op :: "'a list \<Rightarrow> ('a list \<times> 'a list) \<Rightarrow> ('a list \<times> 'a list)" where
   "op xs (ys, sy) = (if even (length xs)
-    then (mix xs (ys, sy), mix (rev xs) (sy, ys))
-    else (mix xs (ys, sy), mix (rev xs) (ys, sy)))"
+    then (mix xs ys sy, mix (rev xs) sy ys)
+    else (mix xs ys sy, mix (rev xs) ys sy))"
 
 
 end
